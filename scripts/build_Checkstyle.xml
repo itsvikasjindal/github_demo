@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="checkstyle.examples.basic" default="checkstyle" basedir=".">
+    
+    <property file="build_Checkstyle.properties" />
+    
+    <path id="checkstyle.classpath">
+            <fileset dir="${checkstyle.dir}">
+                <include name="checkstyle*.jar" />
+            </fileset>
+    </path>
+    
+    <taskdef resource="com/puppycrawl/tools/checkstyle/ant/checkstyle-ant-task.properties"
+        classpathref="checkstyle.classpath"/>
+    
+    <target name="init">
+        <mkdir dir="${classes.dir}" />
+        <mkdir dir="${checkstyle.xml.dir}" />
+        <mkdir dir="${checkstyle.html.dir}" />
+    </target>
+
+    <target name="compile" depends="init">
+        <javac srcdir="${src.dir}" destdir="${classes.dir}" debug="yes">
+            <classpath refid="checkstyle.classpath" />
+        </javac>
+    </target>
+    
+    <target name="clean" description="Remove all files created by the build/test process.">
+        <delete dir="${classes.dir}" />
+        <delete dir="${reports.dir}" />
+    </target>
+    
+    <target name="checkstyle"
+            description="Generates a report of code convention violations." depends="init,compile">
+
+      <checkstyle config="${checkstyle.docs.dir}/sun_checks.xml"
+                  failureProperty="checkstyle.failure"
+                  failOnViolation="false">
+        <classpath location="${classes.dir}" />
+        <classpath refid="checkstyle.classpath" />
+        <formatter type="xml" tofile="${checkstyle.xml.dir}/checkstyle_report.xml"/>
+        <fileset dir="${src.dir}" includes="**/*.java"/>
+      </checkstyle>
+
+      <xslt in="${checkstyle.xml.dir}/checkstyle_report.xml" out="${checkstyle.html.dir}/checkstyle_report.html" style="${checkstyle.docs.dir}/checkstyle-noframes-sorted.xsl"/>
+
+    </target>
+
+</project>

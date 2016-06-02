@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="pmd.examples.basic" default="pmd" basedir=".">
+	
+	<property file="build_pmd.properties" />
+	
+	<path id="pmd.classpath">
+			<fileset dir="${pmd.home}/lib/">
+				<include name="pmd-4.2.5.jar" />
+			</fileset>
+	</path>
+	
+	<taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask">
+	  		<classpath refid="pmd.classpath" />
+	</taskdef>
+	
+	<target name="init">
+		<mkdir dir="${classes.dir}" />
+		<mkdir dir="${pmd.xml.dir}" />
+	</target>
+
+	<target name="compile" depends="init">
+		<javac srcdir="${src.dir}" destdir="${classes.dir}" debug="yes">
+			<classpath refid="pmd.classpath" />
+		</javac>
+	</target>
+	
+	<target name="clean" description="Remove all files created by the build/test process.">
+		<delete dir="${classes.dir}" />
+		<delete dir="${reports.dir}" />
+	</target>
+	
+	
+	<target name="pmd"
+	        description="Generates a report of code convention violations." depends="init,compile">
+		<pmd rulesetfiles="${pmd.home}/rulesets/design.xml">
+		<formatter type="xml" tofile="${pmd.xml.dir}/pmd_report.xml"/>
+	    <fileset dir="${src.dir}" includes="**/*.java"/>
+			</pmd>
+	</target>	
+</project>

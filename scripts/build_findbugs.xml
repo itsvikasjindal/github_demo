@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="findbugs.examples.basic" default="findbugs" basedir=".">
+    
+    <property file="build_findbugs.properties" />
+    <property name="library" location="../lib"/>
+    <property name="source" location="../src"/>
+    <property name="classes" location="../bin"/>
+    
+    <path id="findbugs.classpath">
+        <fileset dir="${findbugs.home}/lib/">
+            <include name="findbugs-ant.jar" />
+        </fileset>
+        <fileset dir="${library}">
+             <include name="**/*.jar"/>
+        </fileset>
+    </path>
+    
+    <taskdef name="findbugs" classname="edu.umd.cs.findbugs.anttask.FindBugsTask">
+          <classpath refid="findbugs.classpath" />
+    </taskdef>
+    
+    <target name="init">
+        <mkdir dir="${classes}" />
+        <mkdir dir="${findbugs.xml.dir}" />
+    </target>
+
+    <target name="compile" depends="init">
+        <javac srcdir="${source}" destdir="${classes}" debug="yes">
+            <classpath refid="findbugs.classpath" />
+        </javac>
+    </target>
+    
+    <target name="clean" description="Remove all files created by the build/test process.">
+        <delete dir="${classes}" />
+        <delete dir="${reports.dir}" />
+    </target>
+    
+     <target name="findbugs" depends="init,compile">
+        <findbugs home="${findbugs.home}" workHard="true"
+                  output="xml:withMessages"
+                  outputFile="${findbugs.xml.dir}/findbugs_report.xml" >
+              <class location="${classes}" />
+        </findbugs>
+      </target>
+
+  <!--target name="findbugs" depends="init, compile">
+    <findbugs home="${findbugs.home}" output="xml:withMessages" workHard="true" 
+              outputFile="${findbugs.xml.dir}/findbugs_report.xml" >
+        <class location="${src.dir}" />
+    </findbugs>
+  </target-->
+
+</project>

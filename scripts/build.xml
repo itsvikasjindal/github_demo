@@ -1,0 +1,47 @@
+<project name="TestProjectForRTC" default="runTests" basedir="..">
+    <description>
+        Build file to compile and execute JUnit cases for test project.
+    </description>
+    <property name="source" location="src"/>
+    <property name="binary" location="bin"/>
+    <property name="library" location="lib"/>
+    <property name="testcases" location="src"/>
+
+    <path id="test.classpath">
+        <pathelement location="${binary}"/>
+        <fileset dir="${library}">
+            <include name="**/*.jar"/>
+        </fileset>
+    </path>
+
+    <target name="clean">
+        <delete dir="${binary}"/>
+    </target>
+    
+    <target name="init" depends="clean">
+        <mkdir dir="${binary}"/>
+    </target>
+    
+    <target name="compile" depends="init">
+        <javac srcdir="${source}" destdir="${binary}">
+            <classpath refid="test.classpath"/>
+        </javac>
+    </target>
+    
+    <target name="buildjar" depends="compile">
+        <jar destfile="${binary}/project.jar">
+            <fileset dir="${binary}/" />
+            <fileset dir="${source}" includes="**/*.java"/>
+        </jar>
+    </target>
+        
+    <target name="runTests" description="Run JUnit test cases" depends="compile">
+        <junit printsummary="yes" dir="${binary}" fork="true">
+            <classpath refid="test.classpath"/>
+            <test name="com.ericsson.sidp.clm.junit.JUnitStringManipulation" haltonfailure="yes" outfile="testResult">
+                <formatter type="xml"/>
+            </test>
+        </junit>
+    </target>
+    
+</project>

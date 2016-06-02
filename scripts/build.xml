@@ -29,7 +29,7 @@
     </target>
     
     <target name="buildjar" depends="compile">
-        <jar destfile="${binary}/project.jar">
+        <jar destfile="${binary}/CSIDP_GitHub.jar">
             <fileset dir="${binary}/" />
             <fileset dir="${source}" includes="**/*.java"/>
         </jar>
